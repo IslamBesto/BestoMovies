@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/upcompingMoviesFragment">
+
+    <fragment
+        android:id="@+id/upcompingMoviesFragment"
+        android:name="com.bestomovies.saidi.bestomovies.ui.movies.list.upcoming.UpcompingMoviesFragment"
+        android:label="upcomping_movies_fragment"
+        tools:layout="@layout/upcomping_movies_fragment" />
+    <fragment
+        android:id="@+id/popularMoviesFragment"
+        android:name="com.bestomovies.saidi.bestomovies.ui.movies.list.popular.PopularMoviesFragment"
+        android:label="popular_movies_fragment"
+        tools:layout="@layout/popular_movies_fragment" />
+    <fragment
+        android:id="@+id/topRAtedMoviesFragment"
+        android:name="com.bestomovies.saidi.bestomovies.ui.movies.list.toprated.TopRAtedMoviesFragment"
+        android:label="top_rated_movies_fragment"
+        tools:layout="@layout/top_rated_movies_fragment" />
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="com.bestomovies.saidi.bestomovies.ui.movies.detail.MovieDetailFragment"
+        android:label="movie_detail_fragment"
+        tools:layout="@layout/movie_detail_fragment" />
+</navigation>

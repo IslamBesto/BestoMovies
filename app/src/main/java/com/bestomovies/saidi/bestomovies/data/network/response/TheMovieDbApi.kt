@@ -1,5 +1,6 @@
-package com.bestomovies.saidi.bestomovies.data.entity
+package com.bestomovies.saidi.bestomovies.data.network.response
 
+import com.bestomovies.saidi.bestomovies.data.db.entity.Movie
 import com.google.gson.annotations.SerializedName
 
 data class TheMovieDbApi(

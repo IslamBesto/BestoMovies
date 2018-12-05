@@ -1,7 +1,7 @@
-package com.bestomovies.saidi.bestomovies.data
+package com.bestomovies.saidi.bestomovies.data.network
 
 import com.bestomovies.saidi.bestomovies.BuildConfig
-import com.bestomovies.saidi.bestomovies.data.entity.TheMovieDbApi
+import com.bestomovies.saidi.bestomovies.data.network.response.TheMovieDbApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
@@ -35,7 +35,7 @@ interface TheMovieDbApiService {
     ): Deferred<TheMovieDbApi>
 
     companion object {
-        operator fun invoke(): TheMovieDbApiService {
+        operator fun invoke(connectivityInterceptor: ConnectivityIntercetor): TheMovieDbApiService {
             val requestInteceptor = Interceptor { chain ->
                 val url = chain.request()
                         .url()
@@ -53,6 +53,7 @@ interface TheMovieDbApiService {
 
             val okHttpClient = OkHttpClient.Builder()
                     .addInterceptor(requestInteceptor)
+                    .addInterceptor(connectivityInterceptor)
                     .build()
 
             return Retrofit.Builder()

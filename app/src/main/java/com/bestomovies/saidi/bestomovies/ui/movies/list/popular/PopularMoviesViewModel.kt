@@ -1,7 +1,7 @@
 package com.bestomovies.saidi.bestomovies.ui.movies.list.popular
 
-import androidx.lifecycle.ViewModel
+import com.bestomovies.saidi.bestomovies.repository.TheMovieDbRepository
 
-class PopularMoviesViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class PopularMoviesViewModel(private val movieDbRepository: TheMovieDbRepository) : ViewModel() {
+    val popular by lazy { movieDbRepository.getPopularMovies() }
 }

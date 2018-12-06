@@ -5,11 +5,13 @@ import com.bestomovies.saidi.bestomovies.data.db.MoviesDataBase
 import com.bestomovies.saidi.bestomovies.data.network.*
 import com.bestomovies.saidi.bestomovies.repository.TheMovieDbRepository
 import com.bestomovies.saidi.bestomovies.repository.TheMovieDbRepositoryImpl
+import com.bestomovies.saidi.bestomovies.ui.movies.list.popular.PopularMoviesViewModelFactory
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.androidXModule
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
+import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 
 class MovieApplication : Application(), KodeinAware {
@@ -22,5 +24,11 @@ class MovieApplication : Application(), KodeinAware {
         bind() from singleton { TheMovieDbApiService(instance()) }
         bind<MovieNetworkDataSource>() with singleton { MovieNetworkDataSourceImpl(instance()) }
         bind<TheMovieDbRepository>() with singleton { TheMovieDbRepositoryImpl(instance(), instance()) }
+        bind() from provider { PopularMoviesViewModelFactory(instance()) }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        AndroidThreeTen.init(this)
     }
 }

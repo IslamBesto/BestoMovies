@@ -10,7 +10,7 @@ data class Movie(
         var id: Int = 0,
         var adult: Boolean = false,
         @SerializedName("backdrop_path")
-        var backdropPath: String = "",
+        var backdropPath: String? = "",
         @SerializedName("original_language")
         var originalLanguage: String = "",
         @SerializedName("original_title")
@@ -18,7 +18,7 @@ data class Movie(
         var overview: String = "",
         var popularity: Double = 0.0,
         @SerializedName("poster_path")
-        var posterPath: String = "",
+        var posterPath: String? = "",
         @SerializedName("release_date")
         var releaseDate: String = "",
         var title: String = "",

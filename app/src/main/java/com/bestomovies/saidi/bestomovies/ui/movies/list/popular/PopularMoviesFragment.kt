@@ -4,23 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bestomovies.saidi.bestomovies.R
-import com.bestomovies.saidi.bestomovies.data.network.ConnectivityIntercetorImpl
-import com.bestomovies.saidi.bestomovies.data.network.MovieNetworkDataSourceImpl
-import com.bestomovies.saidi.bestomovies.data.network.TheMovieDbApiService
-import kotlinx.android.synthetic.main.popular_movies_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.instance
 
-class PopularMoviesFragment : Fragment() {
+class PopularMoviesFragment : Fragment(), KodeinAware {
 
-    companion object {
-        fun newInstance() = PopularMoviesFragment()
-    }
+    override val kodein by closestKodein()
+    private val viewModelFactory: PopularMoviesViewModelFactory by instance()
 
     private lateinit var viewModel: PopularMoviesViewModel
 
@@ -31,9 +22,11 @@ class PopularMoviesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(PopularMoviesViewModel::class.java)
-        // TODO: Use the ViewModel
-
+        viewModel = ViewModelProviders.of(this@PopularMoviesFragment, viewModelFactory).get(PopularMoviesViewModel::class.java)
+        viewModel.popular.observe(this, Observer { popular ->
+            popular_movie.text = popular[0].title
+        })
+/*
         val theMovieDbApiService = TheMovieDbApiService(ConnectivityIntercetorImpl(this.context!!))
         val movieNetworkDataSource = MovieNetworkDataSourceImpl(theMovieDbApiService)
         movieNetworkDataSource.downloadedPopularMovies.observe(this, Observer { movies ->
@@ -41,7 +34,7 @@ class PopularMoviesFragment : Fragment() {
         })
         GlobalScope.launch(Dispatchers.Main) {
             movieNetworkDataSource.fetchPopular("fr")
-        }
+        }*/
     }
 
 }

@@ -1,11 +1,15 @@
 package com.bestomovies.saidi.bestomovies.repository
 
+import androidx.lifecycle.LiveData
 import com.bestomovies.saidi.bestomovies.data.db.dao.MovieDao
 import com.bestomovies.saidi.bestomovies.data.db.entity.Movie
 import com.bestomovies.saidi.bestomovies.data.db.entity.MovieType
 import com.bestomovies.saidi.bestomovies.data.network.MovieNetworkDataSource
 import com.bestomovies.saidi.bestomovies.data.network.response.TheMovieDbApi
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 
 class TheMovieDbRepositoryImpl(private val movieDao: MovieDao,
@@ -25,26 +29,15 @@ class TheMovieDbRepositoryImpl(private val movieDao: MovieDao,
         }
     }
 
-    private lateinit var popularMovies: LiveData<List<Movie>>
-
     // TODO optimize this
-    override fun getPopularMovies(): LiveData<List<Movie>> {
-        if (!::popularMovies.isInitialized) {
-            popularMovies = MutableLiveData()
-            GlobalScope.launch(Dispatchers.IO) {
-                val movies: LiveData<List<Movie>> =
-                        async {
-                            initPopularMovies()
-                            return@async movieDao.getMovies()
-                        }.await()
-                popularMovies = movies
-            }
-
+    override suspend fun getPopularMovies(): LiveData<List<Movie>> {
+        return withContext(Dispatchers.IO) {
+            initPopularMovies()
+            return@withContext movieDao.getMovies()
         }
-        return popularMovies
     }
 
-    override suspend fun getTopRatedMovues(): LiveData<List<Movie>> {
+    override suspend fun getTopRatedMovies(): LiveData<List<Movie>> {
         return withContext(Dispatchers.IO) {
             initTopRatedMovies()
             return@withContext movieDao.getMovies()

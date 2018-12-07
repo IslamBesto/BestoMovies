@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bestomovies.saidi.bestomovies.R
+import com.bestomovies.saidi.bestomovies.ui.base.ScopedFragment
+import kotlinx.android.synthetic.main.popular_movies_fragment.*
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class PopularMoviesFragment : Fragment(), KodeinAware {
+class PopularMoviesFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: PopularMoviesViewModelFactory by instance()
@@ -23,18 +29,14 @@ class PopularMoviesFragment : Fragment(), KodeinAware {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this@PopularMoviesFragment, viewModelFactory).get(PopularMoviesViewModel::class.java)
-        viewModel.popular.observe(this, Observer { popular ->
-            popular_movie.text = popular[0].title
-        })
-/*
-        val theMovieDbApiService = TheMovieDbApiService(ConnectivityIntercetorImpl(this.context!!))
-        val movieNetworkDataSource = MovieNetworkDataSourceImpl(theMovieDbApiService)
-        movieNetworkDataSource.downloadedPopularMovies.observe(this, Observer { movies ->
-            popular_movie.text = movies.movies[0].title
-        })
-        GlobalScope.launch(Dispatchers.Main) {
-            movieNetworkDataSource.fetchPopular("fr")
-        }*/
+        bindUI()
     }
 
+    private fun bindUI() = launch {
+        val popularMovies = viewModel.popular.await()
+        popularMovies.observe(this@PopularMoviesFragment, Observer {
+            if (it == null) return@Observer
+            popular_movie.text = it[0].title
+        })
+    }
 }

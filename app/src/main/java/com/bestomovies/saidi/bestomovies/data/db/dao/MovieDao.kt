@@ -14,4 +14,13 @@ interface MovieDao {
 
     @Query("SELECT * FROM movie")
     fun getMovies(): LiveData<List<Movie>>
+
+    @Query("SELECT * FROM movie WHERE type = 1")
+    fun getPopularMovies(): LiveData<List<Movie>>
+
+    @Query("SELECT * FROM movie WHERE type= 3")
+    fun getTopRatedMovies(): LiveData<List<Movie>>
+
+    @Query("SELECT * FROM movie WHERE type = 2")
+    fun getUpcomingMovies(): LiveData<List<Movie>>
 }

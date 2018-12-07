@@ -29,25 +29,32 @@ class TheMovieDbRepositoryImpl(private val movieDao: MovieDao,
         }
     }
 
-    // TODO optimize this
-    override suspend fun getPopularMovies(): LiveData<List<Movie>> {
+    override suspend fun fetchMovies(type: MovieType): LiveData<List<Movie>> {
+        return when (type) {
+            MovieType.POPULAR -> getPopularMovies()
+            MovieType.UPCOMING -> getUpcomingMovies()
+            MovieType.TOP_RATED -> getTopRatedMovies()
+        }
+    }
+
+    private suspend fun getPopularMovies(): LiveData<List<Movie>> {
         return withContext(Dispatchers.IO) {
             initPopularMovies()
-            return@withContext movieDao.getMovies()
+            return@withContext movieDao.getPopularMovies()
         }
     }
 
-    override suspend fun getTopRatedMovies(): LiveData<List<Movie>> {
+    private suspend fun getTopRatedMovies(): LiveData<List<Movie>> {
         return withContext(Dispatchers.IO) {
             initTopRatedMovies()
-            return@withContext movieDao.getMovies()
+            return@withContext movieDao.getTopRatedMovies()
         }
     }
 
-    override suspend fun getUpcomingMovies(): LiveData<List<Movie>> {
+    private suspend fun getUpcomingMovies(): LiveData<List<Movie>> {
         return withContext(Dispatchers.IO) {
             initUpcomingMovies()
-            return@withContext movieDao.getMovies()
+            return@withContext movieDao.getUpcomingMovies()
         }
     }
 
@@ -85,7 +92,7 @@ class TheMovieDbRepositoryImpl(private val movieDao: MovieDao,
 
     private suspend fun initTopRatedMovies() {
         if (isFetchCurrentNeeded(ZonedDateTime.now().minusHours(1)))
-            fetchTopratedMovies()
+            fetchTopRatedMovies()
     }
 
     private suspend fun initUpcomingMovies() {
@@ -97,7 +104,7 @@ class TheMovieDbRepositoryImpl(private val movieDao: MovieDao,
         movieNetworkDataSource.fetchPopular("en-US")
     }
 
-    private suspend fun fetchTopratedMovies() {
+    private suspend fun fetchTopRatedMovies() {
         movieNetworkDataSource.fetchTopRated("en_US")
     }
 
